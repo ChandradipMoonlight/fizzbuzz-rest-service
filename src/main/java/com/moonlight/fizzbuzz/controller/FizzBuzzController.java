@@ -21,7 +21,7 @@ public class FizzBuzzController {
     @GetMapping(value = "/encode")
     public Flux<String> getFizzBuzzAlgo(@RequestParam(defaultValue = "3") int int1,
                                 @RequestParam(defaultValue = "5") int int2,
-                                @RequestParam(defaultValue = "100") int limit,
+                                @RequestParam(defaultValue = "10") int limit,
                                 @RequestParam(defaultValue = "fizz") String str1,
                                 @RequestParam(defaultValue = "buzz") String str2) {
         FizzBuzzRequest fizzBuzzRequest = new FizzBuzzRequest(int1, int2, limit, str1, str2);
