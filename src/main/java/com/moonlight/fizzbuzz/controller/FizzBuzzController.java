@@ -13,12 +13,12 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
-@RequestMapping(name = "/api/v1/fizzbuzz")
+@RequestMapping(value = "/api/v1/fizzbuzz")
 public class FizzBuzzController {
     @Autowired
     private FizzBuzzService fizzBuzzService;
 
-    @GetMapping(name = "/encode")
+    @GetMapping(value = "/encode")
     public Flux<String> getFizzBuzzAlgo(@RequestParam(defaultValue = "3") int int1,
                                 @RequestParam(defaultValue = "5") int int2,
                                 @RequestParam(defaultValue = "100") int limit,
@@ -28,8 +28,8 @@ public class FizzBuzzController {
         return fizzBuzzService.getEncryptedResultUsingFizzBuzzAlgorithm(fizzBuzzRequest);
     }
 
-    @GetMapping(name = "/statistics")
-    public Mono<Map<String, Object>> geStatistics() {
+    @GetMapping(value = "/statistic")
+    public Mono<Map<String, Object>> getStatistics() {
         return fizzBuzzService.getStatistics();
     }
 

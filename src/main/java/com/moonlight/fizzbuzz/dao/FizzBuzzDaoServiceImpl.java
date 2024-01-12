@@ -10,7 +10,6 @@ import java.util.Map;
 public class FizzBuzzDaoServiceImpl implements FizzBuzzDaoService{
     private final Map<FizzBuzzRequest, Integer> fizzBuzzRequestFrequency = new HashMap<>();
 
-
     @Override
     public void updateFrequencyOfFizzBuzzRequest(FizzBuzzRequest fizzBuzzRequest) {
         fizzBuzzRequestFrequency.put(fizzBuzzRequest, fizzBuzzRequestFrequency.getOrDefault(fizzBuzzRequest, 0)+1);
