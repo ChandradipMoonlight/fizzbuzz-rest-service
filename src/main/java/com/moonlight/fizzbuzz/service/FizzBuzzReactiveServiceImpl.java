@@ -4,6 +4,8 @@ import com.moonlight.fizzbuzz.dao.FizzBuzzDaoService;
 import com.moonlight.fizzbuzz.dto.FizzBuzzRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -11,27 +13,32 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-public class FizzBuzzServiceImpl implements FizzBuzzService{
+public class FizzBuzzReactiveServiceImpl implements FizzBuzzReactiveService {
+
     @Autowired
     private FizzBuzzDaoService fizzBuzzDaoService;
     @Override
-    public List<String> getEncryptedResultUsingFizzBuzzAlgorithm(FizzBuzzRequest fizzBuzzRequest) {
+    public Flux<String> getAsyncEncryptedResultUsingFizzBuzzAlgorithm(FizzBuzzRequest fizzBuzzRequest) {
         fizzBuzzDaoService.updateFrequencyOfFizzBuzzRequest(fizzBuzzRequest);
-        return IntStream.rangeClosed(1, fizzBuzzRequest.getLimit())
-                .boxed()
-                .map(number -> convertToString(number, fizzBuzzRequest))
-                .collect(Collectors.toList());
+        return Flux.defer(() ->
+                Flux.range(1, fizzBuzzRequest.getLimit())
+                        .map(number -> convertToString(number, fizzBuzzRequest))
+        );
     }
 
-
-    public Map<String, Object> getStatistics() {
-        return fizzBuzzDaoService.getFrequencyOfFizzBuzzRequest()
-                .entrySet()
-                .stream()
-                .max(Map.Entry.comparingByValue())
-                .map(entry -> Map.of("most used request", entry.getKey(), "most frequent request", entry.getValue()))
-                .orElse(null);
+    @Override
+    public Mono<Map<String, Object>> getAsyncStatistics() {
+        return Mono.defer(() ->
+                Mono.justOrEmpty(fizzBuzzDaoService.getFrequencyOfFizzBuzzRequest()
+                        .entrySet()
+                        .stream()
+                        .max(Map.Entry.comparingByValue())
+                        .map(entry -> Map.of("most used request", entry.getKey(), "most frequent request", entry.getValue()))
+                        .orElse(null)
+                )
+        );
     }
+
     private String convertToString(Integer number, FizzBuzzRequest fizzBuzzRequest) {
         if (number% fizzBuzzRequest.getInt1() == 0 && number % fizzBuzzRequest.getInt2() == 0) {
             return fizzBuzzRequest.getStr1() + fizzBuzzRequest.getStr2();
@@ -43,5 +50,4 @@ public class FizzBuzzServiceImpl implements FizzBuzzService{
             return String.valueOf(number);
         }
     }
-
 }
