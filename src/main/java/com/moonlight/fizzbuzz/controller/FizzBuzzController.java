@@ -4,6 +4,7 @@ import com.moonlight.fizzbuzz.dto.FizzBuzzRequest;
 import com.moonlight.fizzbuzz.dto.FizzBuzzResponse;
 import com.moonlight.fizzbuzz.service.FizzBuzzReactiveService;
 import com.moonlight.fizzbuzz.service.FizzBuzzService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/v1/fizzbuzz")
+@Slf4j
 public class FizzBuzzController {
 
     @Autowired
@@ -28,7 +30,9 @@ public class FizzBuzzController {
                                                             @RequestParam(defaultValue = "fizz") String str1,
                                                             @RequestParam(defaultValue = "buzz") String str2) {
         FizzBuzzRequest fizzBuzzRequest = new FizzBuzzRequest(int1, int2, limit, str1, str2);
+        log.debug("Inside class[FizzBuzzController] method[getFizzBuzzAlgo] FizzBuzzRequest : ", fizzBuzzRequest);
         List<String> result = fizzBuzzService.getEncryptedResultUsingFizzBuzzAlgorithm(fizzBuzzRequest);
+        log.debug("Inside class[FizzBuzzController] method[getFizzBuzzAlgo] Result : ", result);
         return ResponseEntity.ok().body(new FizzBuzzResponse("Success", result));
     }
 
